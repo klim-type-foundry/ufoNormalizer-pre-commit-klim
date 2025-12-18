@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import re
 import argparse
-import os
 import subprocess
 from collections.abc import Sequence
 from typing import Any
@@ -11,8 +10,15 @@ UFO_PATH_RE = r".*.ufo"
 
 
 def get_ufo_path_from_diff_line(diff_line: str) -> str | None:
-    diff_line = diff_line.encode().decode('unicode-escape').encode('latin1').decode(
-        'utf-8').strip().lstrip('"').rstrip('"')
+    diff_line = (
+        diff_line.encode()
+        .decode("unicode-escape")
+        .encode("latin1")
+        .decode("utf-8")
+        .strip()
+        .lstrip('"')
+        .rstrip('"')
+    )
     matches = re.search(UFO_PATH_RE, diff_line, re.IGNORECASE)
     if not matches:
         return None
@@ -33,8 +39,8 @@ def get_ufo_paths_from_diff(git_diff: str) -> set[str]:
 
 
 def call_subprocess(*cmd: str, **kwargs: Any) -> str:
-    kwargs.setdefault('stdout', subprocess.PIPE)
-    kwargs.setdefault('stderr', subprocess.PIPE)
+    kwargs.setdefault("stdout", subprocess.PIPE)
+    kwargs.setdefault("stderr", subprocess.PIPE)
     proc = subprocess.Popen(cmd, **kwargs)
     stdout, stderr = proc.communicate()
     stdout = stdout.decode()
@@ -46,29 +52,29 @@ def call_subprocess(*cmd: str, **kwargs: Any) -> str:
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        '--autofix',
-        action='store_true',
-        dest='autofix',
-        help='Automatically format UFOs',
-        default=False
+        "--autofix",
+        action="store_true",
+        dest="autofix",
+        help="Automatically format UFOs",
+        default=False,
     )
 
     args = parser.parse_args(argv)
 
     # Get the filenames of the staged UFOs
-    commands = 'git', 'diff', '--name-only', '--raw', '--staged', '--', '*.ufo/*'
+    commands = "git", "diff", "--name-only", "--raw", "--staged", "--", "*.ufo/*"
     added_diff = call_subprocess(*commands)
 
     # Run ufoNormalizer on each staged UFO
     for ufo_path in get_ufo_paths_from_diff(added_diff):
-        call_subprocess('ufonormalizer', '--all', '--quiet', '--no-mod-times', ufo_path)
+        call_subprocess("ufonormalizer", "--all", "--quiet", "--no-mod-times", ufo_path)
 
         # If fixing, add the fixed UFO back to the commit
         if args.autofix:
-            call_subprocess('git', 'add', '--update', ufo_path)
+            call_subprocess("git", "add", "--update", ufo_path)
 
     return 0
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     raise SystemExit(main())
