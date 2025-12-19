@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import re
 import argparse
+import re
 import subprocess
 from collections.abc import Sequence
 from typing import Any
