@@ -8,7 +8,7 @@ Add this to your `.pre-commit-config.yaml`:
   - repo: https://github.com/klim-type-foundry/ufoNormalizer-pre-commit
     rev: 1.0.0
     hooks:
-      - id: ufonormalizer-pre-commit
+      - id: ufonormalizer
 ```
 
 If you want to automatically commit the UFOs after normalisation, add `--autofix`:
@@ -17,6 +17,6 @@ If you want to automatically commit the UFOs after normalisation, add `--autofix
   - repo: https://github.com/klim-type-foundry/ufoNormalizer-pre-commit
     rev: 1.0.0
     hooks:
-      - id: ufonormalizer-pre-commit
+      - id: ufonormalizer
         args: [--autofix]
 ```

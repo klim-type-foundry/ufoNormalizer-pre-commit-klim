@@ -1,4 +1,4 @@
--   id: ufonormalizer-pre-commit
+-   id: ufonormalizer
     name: ufoNormalizer
     description: Format UFOs with ufoNormalizer.
     entry: ufo-normalizer
